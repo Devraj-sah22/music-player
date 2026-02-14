@@ -1,0 +1,26 @@
+{
+  "name": "premium-music-player",
+  "version": "1.0.0",
+  "description": "Beautiful music player for Windows",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder"
+  },
+  "build": {
+    "appId": "com.yourname.musicplayer",
+    "productName": "Premium Music Player",
+    "win": {
+      "target": "nsis",
+      "icon": "assets/icon.png"
+    }
+  },
+  "devDependencies": {
+    "electron": "^27.0.0",
+    "electron-builder": "^24.6.4"
+  },
+  "dependencies": {
+    "howler": "^2.2.4",
+    "node-fetch": "^2.7.0"
+  }
+}

@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium Music Player</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="window-controls">
+        <div class="window-drag"></div>
+        <div class="window-buttons">
+            <button class="window-btn minimize" onclick="window.electronAPI.minimize()">
+                <i class="fas fa-minus"></i>
+            </button>
+            <button class="window-btn maximize" onclick="window.electronAPI.maximize()">
+                <i class="fas fa-square"></i>
+            </button>
+            <button class="window-btn close" onclick="window.electronAPI.close()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="logo">
+                <i class="fas fa-music"></i>
+                <span>Melody</span>
+            </div>
+            
+            <nav class="nav-menu">
+                <a href="#" class="nav-item active">
+                    <i class="fas fa-home"></i>
+                    <span>Home</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fas fa-search"></i>
+                    <span>Search</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fas fa-library"></i>
+                    <span>Library</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fas fa-heart"></i>
+                    <span>Favorites</span>
+                </a>
+            </nav>
+
+            <div class="playlists">
+                <div class="playlists-header">
+                    <span>PLAYLISTS</span>
+                    <i class="fas fa-plus"></i>
+                </div>
+                <div class="playlist-item">
+                    <i class="fas fa-music"></i>
+                    <span>Daily Mix 1</span>
+                </div>
+                <div class="playlist-item">
+                    <i class="fas fa-music"></i>
+                    <span>Discover Weekly</span>
+                </div>
+                <div class="playlist-item">
+                    <i class="fas fa-music"></i>
+                    <span>Favorites</span>
+                </div>
+            </div>
+
+            <div class="add-song-section">
+                <div class="add-song-btn" onclick="showAddSongModal()">
+                    <i class="fas fa-plus-circle"></i>
+                    <span>Add Song</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="header">
+                <h1>Good evening</h1>
+                <div class="user-profile">
+                    <i class="fas fa-user-circle"></i>
+                </div>
+            </div>
+
+            <!-- Recently Played -->
+            <section class="recently-played">
+                <h2>Recently Played</h2>
+                <div class="cards-container" id="recently-played">
+                    <!-- Dynamic content -->
+                </div>
+            </section>
+
+            <!-- Playlist -->
+            <section class="playlist-section">
+                <h2>Your Library</h2>
+                <div class="playlist-table" id="playlist-table">
+                    <div class="table-header">
+                        <div class="col">#</div>
+                        <div class="col">TITLE</div>
+                        <div class="col">ARTIST</div>
+                        <div class="col">DURATION</div>
+                        <div class="col"></div>
+                    </div>
+                    <div id="playlist-rows">
+                        <!-- Dynamic playlist items -->
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <!-- Player Bar -->
+    <div class="player-bar">
+        <div class="now-playing">
+            <div class="album-art">
+                <i class="fas fa-music"></i>
+            </div>
+            <div class="song-info">
+                <div class="song-title">Not Playing</div>
+                <div class="song-artist">Select a song to play</div>
+            </div>
+            <button class="favorite-btn">
+                <i class="far fa-heart"></i>
+            </button>
+        </div>
+
+        <div class="player-controls">
+            <div class="control-buttons">
+                <button class="control-btn" onclick="shuffle()">
+                    <i class="fas fa-random"></i>
+                </button>
+                <button class="control-btn" onclick="previous()">
+                    <i class="fas fa-step-backward"></i>
+                </button>
+                <button class="control-btn play-pause" onclick="togglePlay()">
+                    <i class="fas fa-play"></i>
+                </button>
+                <button class="control-btn" onclick="next()">
+                    <i class="fas fa-step-forward"></i>
+                </button>
+                <button class="control-btn" onclick="repeat()">
+                    <i class="fas fa-repeat"></i>
+                </button>
+            </div>
+
+            <div class="progress-bar">
+                <span class="current-time">0:00</span>
+                <div class="progress-container" onclick="seek(event)">
+                    <div class="progress-bg">
+                        <div class="progress-fill" id="progress-fill"></div>
+                    </div>
+                </div>
+                <span class="total-time">0:00</span>
+            </div>
+        </div>
+
+        <div class="volume-controls">
+            <button class="volume-btn" onclick="toggleMute()">
+                <i class="fas fa-volume-up"></i>
+            </button>
+            <div class="volume-slider" onclick="setVolume(event)">
+                <div class="volume-bg">
+                    <div class="volume-fill" id="volume-fill" style="width: 70%"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Song Modal -->
+    <div id="addSongModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Add to Library</h2>
+                <span class="close-modal" onclick="hideAddSongModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="add-options">
+                    <div class="add-option" onclick="addFromUrl()">
+                        <i class="fas fa-link"></i>
+                        <div>
+                            <h3>Add from URL</h3>
+                            <p>YouTube, SoundCloud, etc.</p>
+                        </div>
+                    </div>
+                    <div class="add-option" onclick="addLocalFile()">
+                        <i class="fas fa-folder-open"></i>
+                        <div>
+                            <h3>Browse Files</h3>
+                            <p>MP3, WAV, FLAC from your computer</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="url-input-section" class="url-input-section hidden">
+                    <input type="text" id="song-url" placeholder="Paste URL here...">
+                    <button onclick="processUrl()">Add Song</button>
+                </div>
+                
+                <div id="loading-indicator" class="loading hidden">
+                    <div class="spinner"></div>
+                    <p>Adding song...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="renderer.js"></script>
+</body>
+</html>
